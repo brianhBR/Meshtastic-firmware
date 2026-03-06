@@ -47,8 +47,6 @@ void InkHUD::BearingFavoritesApplet::refreshFavorites()
         meshtastic_NodeInfoLite *node = nodeDB->getMeshNodeByIndex(i);
         if (!node || node->num == nodeDB->getNodeNum())
             continue;
-        if (!node->is_favorite)
-            continue;
 
         FavoriteInfo info;
         info.nodeNum = node->num;
@@ -99,7 +97,7 @@ ProcessMessage InkHUD::BearingFavoritesApplet::handleReceived(const meshtastic_M
         relevant = true;
     } else {
         const meshtastic_NodeInfoLite *sender = nodeDB->getMeshNode(mp.from);
-        if (sender && sender->is_favorite)
+        if (sender)
             relevant = true;
     }
 
@@ -224,9 +222,9 @@ void InkHUD::BearingFavoritesApplet::onRender(bool full)
     // Empty state: no favorites at all
     if (favorites.empty()) {
         setFont(fontSmall);
-        printAt(X(0.5), Y(0.5) - fontSmall.lineHeight(), "Mark nodes as favorites", CENTER, MIDDLE);
-        printAt(X(0.5), Y(0.5), "to see bearing and", CENTER, MIDDLE);
-        printAt(X(0.5), Y(0.5) + fontSmall.lineHeight(), "distance here", CENTER, MIDDLE);
+        printAt(X(0.5), Y(0.5) - fontSmall.lineHeight(), "No nodes heard yet.", CENTER, MIDDLE);
+        printAt(X(0.5), Y(0.5), "Bearing and distance", CENTER, MIDDLE);
+        printAt(X(0.5), Y(0.5) + fontSmall.lineHeight(), "will appear here", CENTER, MIDDLE);
         return;
     }
 

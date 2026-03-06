@@ -12,13 +12,13 @@
 
   // === Device ===
   "USERPREFS_CONFIG_DEVICE_ROLE": "meshtastic_Config_DeviceConfig_Role_CLIENT",
-  "USERPREFS_CONFIG_OWNER_LONG_NAME": "Base-%04x",
+  "USERPREFS_CONFIG_OWNER_LONG_NAME": "Doris-%04x",
 
-  // === GPS & Position ===
+  // === GPS & Position (aggressive tracking for camera recovery) ===
   "USERPREFS_CONFIG_GPS_MODE": "meshtastic_Config_PositionConfig_GpsMode_ENABLED",
-  "USERPREFS_CONFIG_SMART_POSITION_ENABLED": "true",
-  "USERPREFS_CONFIG_GPS_UPDATE_INTERVAL": "120",
-  "USERPREFS_CONFIG_POSITION_BROADCAST_INTERVAL": "900",
+  "USERPREFS_CONFIG_SMART_POSITION_ENABLED": "false",
+  "USERPREFS_CONFIG_GPS_UPDATE_INTERVAL": "8",
+  "USERPREFS_CONFIG_POSITION_BROADCAST_INTERVAL": "60",
 
   // === Bluetooth ===
   "USERPREFS_FIXED_BLUETOOTH": "123456",

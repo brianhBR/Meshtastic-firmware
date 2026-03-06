@@ -1104,7 +1104,7 @@ void NodeDB::installDefaultDeviceState()
     // Set default owner name
     pickNewNodeNum(); // based on macaddr now
 #ifdef USERPREFS_CONFIG_OWNER_LONG_NAME
-    snprintf(owner.long_name, sizeof(owner.long_name), (const char *)USERPREFS_CONFIG_OWNER_LONG_NAME);
+    snprintf(owner.long_name, sizeof(owner.long_name), (const char *)USERPREFS_CONFIG_OWNER_LONG_NAME, getNodeNum() & 0x0ffff);
 #else
     snprintf(owner.long_name, sizeof(owner.long_name), "Meshtastic %04x", getNodeNum() & 0x0ffff);
 #endif
