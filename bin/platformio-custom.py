@@ -214,7 +214,12 @@ try:
 except subprocess.CalledProcessError:
     repo_owner = "unknown"
 
-jsonLoc = env["PROJECT_DIR"] + "/userPrefs.jsonc"
+import os
+pioenv = env.get("PIOENV")
+envJsonLoc = env["PROJECT_DIR"] + f"/userPrefs-{pioenv}.jsonc"
+defaultJsonLoc = env["PROJECT_DIR"] + "/userPrefs.jsonc"
+jsonLoc = envJsonLoc if os.path.isfile(envJsonLoc) else defaultJsonLoc
+print(f"Loading userPrefs from {os.path.basename(jsonLoc)}")
 with open(jsonLoc) as f:
     jsonStr = re.sub("//.*","", f.read(), flags=re.MULTILINE)
     userPrefs = json.loads(jsonStr)
