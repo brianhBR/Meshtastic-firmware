@@ -73,7 +73,7 @@ void setupNicheGraphics()
 
     // Pick applets
     // Note: order of applets determines priority of "auto-show" feature
-    inkhud->addApplet("All Messages", new InkHUD::AllMessageApplet, true, true); // Activated, autoshown
+    inkhud->addApplet("All Messages", new InkHUD::AllMessageApplet);              // -
     inkhud->addApplet("DMs", new InkHUD::DMApplet);                              // -
     inkhud->addApplet("Channel 0", new InkHUD::ThreadedMessageApplet(0));        // -
     inkhud->addApplet("Channel 1", new InkHUD::ThreadedMessageApplet(1));        // -
