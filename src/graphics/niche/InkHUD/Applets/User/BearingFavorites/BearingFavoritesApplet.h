@@ -65,7 +65,12 @@ class BearingFavoritesApplet : public Applet, public SinglePortModule, public co
         SignalStrength signal = SignalStrength::SIGNAL_UNKNOWN;
     };
 
+    static constexpr uint32_t LOCATOR_POLL_MS = 1000;
+
     void refreshFavorites();
+    // Recompute from NodeDB; redraw when bearing/distance/list changes. Returns true if changed.
+    bool refreshAndUpdateIfChanged(bool autoshow = false,
+                                   Drivers::EInk::UpdateTypes updateType = Drivers::EInk::UpdateTypes::UNSPECIFIED);
     void drawBearingArrow(int16_t cx, int16_t cy, int16_t radius, float bearingDeg);
     void drawSignalIndicator(int16_t x, int16_t y, uint16_t w, uint16_t h, SignalStrength strength);
     std::string formatAge(uint32_t seenAtMillis);
