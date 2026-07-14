@@ -81,14 +81,19 @@ void InkHUD::LogoApplet::onRender(bool full)
         int16_t oemTextT = logoB + Y(0.1);                         // Top edge of the custom text
         printAt(X(0.5), oemTextT, USERPREFS_OEM_TEXT, CENTER, TOP);
 
-        // Draw the device (owner) long name below the custom text
-        int16_t deviceNameT = oemTextT + getFont().lineHeight(); // Measured with the OEM text font, before switching
+        // Draw the device (owner) long name below the custom text, matching the OEM text size
+        int16_t deviceNameT = oemTextT + getFont().lineHeight(); // Measured with the OEM text font
         meshtastic_NodeInfoLite *ourNode = nodeDB->getMeshNode(nodeDB->getNodeNum());
         if (ourNode && ourNode->has_user) {
-            setFont(fontSmall);
             std::string deviceName = parse(ourNode->user.long_name);
-            if (!deviceName.empty() && isPrintable(deviceName))
+            if (!deviceName.empty() && isPrintable(deviceName)) {
+                // Keep the same font as the OEM text; only shrink if the name is too wide to fit
+                if (getTextWidth(deviceName) > 0.8 * width())
+                    setFont(fontMedium);
+                if (getTextWidth(deviceName) > 0.8 * width())
+                    setFont(fontSmall);
                 printAt(X(0.5), deviceNameT, deviceName, CENTER, TOP);
+            }
         }
 
         // Don't draw the normal boot screen, we've already drawn our custom version
