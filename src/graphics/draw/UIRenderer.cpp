@@ -1361,6 +1361,15 @@ void UIRenderer::drawOEMIconScreen(const char *upperMsg, OLEDDisplay *display, O
     }
     display->setFont(FONT_SMALL);
 
+    // Draw the device (owner) long name centered, just above the OEM title
+    const char *deviceName = haveGlyphs(owner.long_name) ? owner.long_name : "";
+    if (deviceName[0]) {
+        const int16_t nameY = (currentResolution == ScreenResolution::High)
+                                  ? y + SCREEN_HEIGHT - FONT_HEIGHT_MEDIUM - FONT_HEIGHT_SMALL
+                                  : y + SCREEN_HEIGHT - FONT_HEIGHT_SMALL;
+        display->drawString(x + getStringCenteredX(deviceName), nameY, deviceName);
+    }
+
     // Draw region in upper left
     if (upperMsg)
         display->drawString(x + 0, y + 0, upperMsg);
