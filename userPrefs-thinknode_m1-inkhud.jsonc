@@ -36,6 +36,9 @@
   // === Bluetooth ===
   "USERPREFS_FIXED_BLUETOOTH": "123456",
 
+  // === Security (allow live debug log streaming to the phone app over BLE) ===
+  "USERPREFS_CONFIG_DEBUG_LOG_API_ENABLED": "true",
+
   // === Timezone ===
   "USERPREFS_TZ_STRING": "PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00       ",
 

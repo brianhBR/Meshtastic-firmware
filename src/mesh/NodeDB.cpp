@@ -677,6 +677,9 @@ void NodeDB::installDefaultConfig(bool preserveKey = false)
         config.device.node_info_broadcast_secs = default_node_info_broadcast_secs;
     config.security.serial_enabled = true;
     config.security.admin_channel_enabled = false;
+#ifdef USERPREFS_CONFIG_DEBUG_LOG_API_ENABLED
+    config.security.debug_log_api_enabled = USERPREFS_CONFIG_DEBUG_LOG_API_ENABLED;
+#endif
     resetRadioConfig(true); // This also triggers NodeInfo/Position requests since we're fresh
     strncpy(config.network.ntp_server, "meshtastic.pool.ntp.org", 32);
 
