@@ -11,7 +11,7 @@ void InkHUD::BearingFavoritesApplet::onActivate()
 {
     refreshFavorites();
     OSThread::enabled = true;
-    OSThread::setIntervalFromNow(60 * 1000UL);
+    OSThread::setIntervalFromNow(LOCATOR_POLL_MS);
 }
 
 void InkHUD::BearingFavoritesApplet::onDeactivate()
@@ -25,8 +25,8 @@ void InkHUD::BearingFavoritesApplet::onDeactivate()
 int32_t InkHUD::BearingFavoritesApplet::runOnce()
 {
     if (isActive())
-        requestUpdate();
-    return 60 * 1000UL;
+        refreshAndUpdateIfChanged(false, Drivers::EInk::UpdateTypes::FAST);
+    return LOCATOR_POLL_MS;
 }
 
 // Rebuild the favorites list from NodeDB, computing bearing and distance for each
@@ -86,6 +86,36 @@ void InkHUD::BearingFavoritesApplet::refreshFavorites()
     });
 }
 
+bool InkHUD::BearingFavoritesApplet::refreshAndUpdateIfChanged(bool autoshow, Drivers::EInk::UpdateTypes updateType)
+{
+    std::vector<FavoriteInfo> oldFavorites = favorites;
+    refreshFavorites();
+
+    bool changed = (oldFavorites.size() != favorites.size());
+    if (!changed) {
+        for (size_t i = 0; i < favorites.size(); i++) {
+            float bearingDelta = oldFavorites[i].bearingDegrees - favorites[i].bearingDegrees;
+            if (bearingDelta < 0)
+                bearingDelta = -bearingDelta;
+
+            if (oldFavorites[i].nodeNum != favorites[i].nodeNum ||
+                oldFavorites[i].distanceMeters != favorites[i].distanceMeters ||
+                oldFavorites[i].hasPosition != favorites[i].hasPosition || bearingDelta > 1.0f) {
+                changed = true;
+                break;
+            }
+        }
+    }
+
+    if (changed) {
+        if (autoshow)
+            requestAutoshow();
+        requestUpdate(updateType);
+    }
+
+    return changed;
+}
+
 ProcessMessage InkHUD::BearingFavoritesApplet::handleReceived(const meshtastic_MeshPacket &mp)
 {
     if (!isActive())
@@ -110,30 +140,7 @@ ProcessMessage InkHUD::BearingFavoritesApplet::handleReceived(const meshtastic_M
         signalStrengths[mp.from] = getSignalStrength(mp.rx_snr, mp.rx_rssi);
     }
 
-    // Snapshot old state to detect meaningful changes
-    std::vector<FavoriteInfo> oldFavorites = favorites;
-    refreshFavorites();
-
-    bool changed = (oldFavorites.size() != favorites.size());
-    if (!changed) {
-        for (size_t i = 0; i < favorites.size(); i++) {
-            float bearingDelta = oldFavorites[i].bearingDegrees - favorites[i].bearingDegrees;
-            if (bearingDelta < 0)
-                bearingDelta = -bearingDelta;
-
-            if (oldFavorites[i].nodeNum != favorites[i].nodeNum ||
-                oldFavorites[i].distanceMeters != favorites[i].distanceMeters ||
-                oldFavorites[i].hasPosition != favorites[i].hasPosition || bearingDelta > 1.0f) {
-                changed = true;
-                break;
-            }
-        }
-    }
-
-    if (changed) {
-        requestAutoshow();
-        requestUpdate();
-    }
+    refreshAndUpdateIfChanged(true);
 
     return ProcessMessage::CONTINUE;
 }

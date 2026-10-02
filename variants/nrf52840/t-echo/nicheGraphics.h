@@ -14,6 +14,7 @@
 #include "graphics/niche/InkHUD/Applets/User/DM/DMApplet.h"
 #include "graphics/niche/InkHUD/Applets/User/FavoritesMap/FavoritesMapApplet.h"
 #include "graphics/niche/InkHUD/Applets/User/Heard/HeardApplet.h"
+#include "graphics/niche/InkHUD/Applets/User/NodeInfo/NodeInfoApplet.h"
 #include "graphics/niche/InkHUD/Applets/User/Positions/PositionsApplet.h"
 #include "graphics/niche/InkHUD/Applets/User/RecentsList/RecentsListApplet.h"
 #include "graphics/niche/InkHUD/Applets/User/ThreadedMessage/ThreadedMessageApplet.h"
@@ -85,6 +86,7 @@ void setupNicheGraphics()
     inkhud->addApplet("Waypoints", new InkHUD::WaypointListApplet);              // -
     inkhud->addApplet("Favorites Map", new InkHUD::FavoritesMapApplet);          // -
     inkhud->addApplet("Node Locator", new InkHUD::BearingFavoritesApplet, true, false, 0); // Activated, default on tile 0
+    inkhud->addApplet("Node Info", new InkHUD::NodeInfoApplet);                  // -
     inkhud->addApplet("Recents List", new InkHUD::RecentsListApplet);            // -
     inkhud->addApplet("Heard", new InkHUD::HeardApplet);                         // -
 
