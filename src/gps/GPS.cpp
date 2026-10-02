@@ -820,6 +820,12 @@ bool GPS::setup()
 {
     if (!didSerialInit) {
         int msglen = 0;
+#ifdef GPS_GENERIC_NMEA
+        if (gnssModel == GNSS_MODEL_UNKNOWN) {
+            gnssModel = GNSS_MODEL_GENERIC_NMEA;
+            LOG_INFO("GPS_GENERIC_NMEA: skipping probe, listening for NMEA on RX");
+        }
+#else
         if (tx_gpio && gnssModel == GNSS_MODEL_UNKNOWN) {
             if (!hasProbeCache && !triedProbeCache) {
                 (void)loadProbeCache();
@@ -858,6 +864,7 @@ bool GPS::setup()
             }
 #endif
         }
+#endif
 
         if (gnssModel != GNSS_MODEL_UNKNOWN) {
             setConnected();
@@ -1419,6 +1426,11 @@ void GPS::down()
     uint32_t updateInterval = Default::getConfiguredOrDefaultMs(config.position.gps_update_interval);
 
     LOG_DEBUG("%us until next search", sleepTime / 1000);
+
+    if (gnssModel == GNSS_MODEL_GENERIC_NMEA) {
+        setPowerState(GPS_IDLE);
+        return;
+    }
 
     // If update interval less than 10 seconds, no attempt to sleep
     if (updateInterval <= GPS_UPDATE_ALWAYS_ON_THRESHOLD_MS || sleepTime == 0)
@@ -2221,7 +2233,8 @@ bool GPS::lookForLocation()
         return false;
     }
 
-    p.location_source = meshtastic_Position_LocSource_LOC_INTERNAL;
+    p.location_source = (gnssModel == GNSS_MODEL_GENERIC_NMEA) ? meshtastic_Position_LocSource_LOC_EXTERNAL
+                                                              : meshtastic_Position_LocSource_LOC_INTERNAL;
 
     // Dilution of precision (an accuracy metric) is reported in 10^2 units, so we need to scale down when we use it
 #ifndef TINYGPS_OPTION_NO_CUSTOM_FIELDS
